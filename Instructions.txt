@@ -1,0 +1,27 @@
+NUMBER GENERATED ALWAYS AS IDENTITY START WITH 10 INCREMENT BY 1
+
+Order of execution for scripts:
+1.  1_Roles
+2.  2_TablesDDL
+3.  3_Insertion
+
+3_Insertion scripts fails in case 2_TablesDDL is not executed.
+If you want to recreate tables , please execute 2_TablesDDL
+
+Scripts description:
+1_Roles: To create roles and users
+2_TablesDDL: To create tables
+3_Insertion: To insert data into tables
+
+Roles:
+Management: This role has acces to read/write to all the tables in schema
+Buyer: This role has access to read/write to poster related tables and read access to offer table
+Seller: This user has read access to poster tables and read/write access to offer, complaints tables
+
+
+Database Users:
+rentalAdmin :Application user for rental project which has all the permissions to create,select,update tables, sessions in project. Use this user for execution of scripts 1_Roles, 2_TablesDDL, 3_Insertion.
+mgUser : Management with assigned role: "Management" which has access to the tables as specified in the submitted document.
+ubuyer: Buyer with assigned role:"Buyer". It has permissions according to the specified permissions in document.
+uSeller: Seller with assigned role:"Seller". It has permissions according to the specified permissions in document.
+

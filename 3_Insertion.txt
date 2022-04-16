@@ -1,0 +1,179 @@
+SET SERVEROUTPUT ON;
+----------------------------------------------------------------------
+DECLARE nCount NUMBER;
+BEGIN
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'COUNTRY';
+IF(nCount > 0)
+THEN
+    EXECUTE IMMEDIATE 'Insert into COUNTRY (NAME) values (''US'')';
+    EXECUTE IMMEDIATE 'Insert into COUNTRY (NAME) values (''UK'')';
+    EXECUTE IMMEDIATE 'Insert into COUNTRY (NAME) values (''MX'')';
+ELSE
+    dbms_output.put_line('TABLE COUNTRY DOES NOT EXIST');
+END IF;
+
+----------------------------------------------------------------------
+
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'STATE';
+IF(nCount > 0)
+THEN
+    EXECUTE IMMEDIATE 'Insert into STATE (NAME) values (''MA'')';
+    EXECUTE IMMEDIATE 'Insert into STATE (NAME) values (''NY'')';
+    EXECUTE IMMEDIATE 'Insert into STATE (NAME) values (''CA'')';
+    EXECUTE IMMEDIATE 'Insert into STATE (NAME) values (''NC'')';
+    EXECUTE IMMEDIATE 'Insert into STATE (NAME) values (''TX'')';
+ELSE
+    dbms_output.put_line('TABLE STATE DOES NOT EXIST');
+END IF;
+
+----------------------------------------------------------------------
+
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'AREA';
+IF(nCount > 0) 
+THEN 
+    EXECUTE IMMEDIATE 'Insert into AREA (MIN_AREA,MAX_AREA) values (100,200)';
+    EXECUTE IMMEDIATE 'Insert into AREA (MIN_AREA,MAX_AREA) values (200,300)';
+    EXECUTE IMMEDIATE 'Insert into AREA (MIN_AREA,MAX_AREA) values (300,400)';
+    EXECUTE IMMEDIATE 'Insert into AREA (MIN_AREA,MAX_AREA) values (400,500)';
+    EXECUTE IMMEDIATE 'Insert into AREA (MIN_AREA,MAX_AREA) values (500,600)';
+    EXECUTE IMMEDIATE 'Insert into AREA (MIN_AREA,MAX_AREA) values (600,700)';
+    EXECUTE IMMEDIATE 'Insert into AREA (MIN_AREA,MAX_AREA) values (700,800)';
+ELSE
+    dbms_output.put_line('TABLE AREA DOES NOT EXIST');
+END IF;
+
+----------------------------------------------------------------------
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'LEASE_TYPE';
+IF(nCount > 0) 
+THEN 
+    EXECUTE IMMEDIATE 'Insert into LEASE_TYPE (LEASE_PERIOD,MAX_COSIGNERS) values (''6m'',2)';
+    EXECUTE IMMEDIATE 'Insert into LEASE_TYPE (LEASE_PERIOD,MAX_COSIGNERS) values (''12m'',4)';
+    EXECUTE IMMEDIATE 'Insert into LEASE_TYPE (LEASE_PERIOD,MAX_COSIGNERS) values (''18m'',2)';
+    EXECUTE IMMEDIATE 'Insert into LEASE_TYPE (LEASE_PERIOD,MAX_COSIGNERS) values (''6m'',3)';
+    EXECUTE IMMEDIATE 'Insert into LEASE_TYPE (LEASE_PERIOD,MAX_COSIGNERS) values (''2y'',2)';
+ELSE
+    dbms_output.put_line('TABLE LEASE_TYPE DOES NOT EXIST');
+END IF;
+
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'PROPERTY_TYPE';
+IF(nCount > 0) 
+THEN 
+    EXECUTE IMMEDIATE 'Insert into PROPERTY_TYPE (TYPE,BEDS,BATHS) values (''APARTMENT'',2,1)';
+    EXECUTE IMMEDIATE 'Insert into PROPERTY_TYPE (TYPE,BEDS,BATHS) values (''APARTMENT'',2,2)';
+    EXECUTE IMMEDIATE 'Insert into PROPERTY_TYPE (TYPE,BEDS,BATHS) values (''APARTMENT'',3,2)';
+    EXECUTE IMMEDIATE 'Insert into PROPERTY_TYPE (TYPE,BEDS,BATHS) values (''HOUSE'',4,2)';
+    EXECUTE IMMEDIATE 'Insert into PROPERTY_TYPE (TYPE,BEDS,BATHS) values (''OUTHOUSE'',1,1)';
+ELSE
+    dbms_output.put_line('TABLE PROPERTY_TYPE DOES NOT EXIST');
+END IF;
+
+
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'TAGS';
+IF(nCount > 0) 
+THEN 
+    EXECUTE IMMEDIATE 'Insert into TAGS (TAG) values (''STUDENT_FRIENDLY'')';
+    EXECUTE IMMEDIATE 'Insert into TAGS (TAG) values (''PROFESSIONALS ONLY'')';
+    EXECUTE IMMEDIATE 'Insert into TAGS (TAG) values (''PET FRIENDLY'')';
+    EXECUTE IMMEDIATE 'Insert into TAGS (TAG) values (''RECENTLY RENOVATED'')';
+ELSE
+    dbms_output.put_line('TABLE TAGS DOES NOT EXIST');
+END IF;
+
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'CITY';
+IF(nCount > 0) 
+THEN 
+    EXECUTE IMMEDIATE 'Insert into CITY (NAME,STATE_ID) values (''Boston'',(select id from state where name = ''MA''))';
+    EXECUTE IMMEDIATE 'Insert into CITY (NAME,STATE_ID) values (''New York'',(select id from state where name = ''NY''))';
+    EXECUTE IMMEDIATE 'Insert into CITY (NAME,STATE_ID) values (''Los Angeles'',(select id from state where name = ''CA''))';
+    EXECUTE IMMEDIATE 'Insert into CITY (NAME,STATE_ID) values (''Charlotte'',(select id from state where name = ''NC''))';
+    EXECUTE IMMEDIATE 'Insert into CITY (NAME,STATE_ID) values (''Dallas'',(select id from state where name = ''TX''))';
+ELSE
+dbms_output.put_line('TABLE CITY DOES NOT EXIST');
+END IF;
+
+
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'STREET';
+IF(nCount > 0) 
+THEN 
+    EXECUTE IMMEDIATE 'Insert into STREET (NAME,CITY_ID) values (''Huntington Ave'',(select id from city where name = ''Boston''))';
+    EXECUTE IMMEDIATE 'Insert into STREET (NAME,CITY_ID) values (''Bedford St'',(select id from city where name = ''New York''))';
+    EXECUTE IMMEDIATE 'Insert into STREET (NAME,CITY_ID) values (''Hollywood Boulevard'',(select id from city where name = ''Los Angeles''))';
+    EXECUTE IMMEDIATE 'Insert into STREET (NAME,CITY_ID) values (''Josh Birmingham Pkwy'',(select id from city where name = ''Charlotte''))';
+    EXECUTE IMMEDIATE 'Insert into STREET (NAME,CITY_ID) values (''Mountain Creek Pkwy'',(select id from city where name = ''Dallas''))';
+ELSE
+dbms_output.put_line('TABLE STREET DOES NOT EXIST');
+END IF;
+
+
+SELECT 
+  count(*) into nCount 
+FROM 
+  user_tables 
+where 
+  table_name = 'ADDRESS';
+IF(nCount > 0) 
+THEN 
+    EXECUTE IMMEDIATE 'Insert into ADDRESS (DOOR_NO, STATE_ID, CITY_ID, STREET_ID, COUNTRY_ID) values (76, (select id from STATE where name = ''MA''), (select id from CITY where name = ''Boston''), (select id from STREET where name = ''Huntington Ave''), (select id from COUNTRY where name = ''US''))';
+    EXECUTE IMMEDIATE 'Insert into ADDRESS (DOOR_NO, STATE_ID, CITY_ID, STREET_ID, COUNTRY_ID) values (90,(select id from STATE where name = ''NY''), (select id from CITY where name = ''New York''), (select id from STREET where name = ''Bedford St''), (select id from COUNTRY where name = ''US''))';
+    EXECUTE IMMEDIATE 'Insert into ADDRESS (DOOR_NO, STATE_ID, CITY_ID, STREET_ID, COUNTRY_ID) values (12,(select id from STATE where name = ''CA''), (select id from CITY where name = ''Los Angeles''), (select id from STREET where name = ''Hollywood Boulevard''), (select id from COUNTRY where name = ''US''))';
+    EXECUTE IMMEDIATE 'Insert into ADDRESS (DOOR_NO, STATE_ID, CITY_ID, STREET_ID, COUNTRY_ID) values (3000,(select id from STATE where name = ''TX''), (select id from CITY where name = ''Dallas''), (select id from STREET where name = ''Mountain Creek Pkwy''), (select id from COUNTRY where name = ''US''))';
+    EXECUTE IMMEDIATE 'Insert into ADDRESS (DOOR_NO, STATE_ID, CITY_ID, STREET_ID, COUNTRY_ID) values (5501,(select id from STATE where name = ''NC''), (select id from CITY where name = ''Charlotte''), (select id from STREET where name = ''Josh Birmingham Pkwy''), (select id from COUNTRY where name = ''US''))';
+ELSE
+dbms_output.put_line('TABLE ADDRESS DOES NOT EXIST');
+END IF;
+
+SELECT
+count(*) into nCount
+FROM
+user_tables
+where
+table_name = 'MANAGEMENT';
+IF(nCount > 0) THEN
+EXECUTE IMMEDIATE 'Insert into MANAGEMENT (first_name,last_name,zip_code,pay,contact, password, door_no, State_id, city_id, street_id, country_id) VALUES (''Scott'', ''black'', 02122, 1000, 6172435672, ''asdfg'', 76, (select ID from STATE where NAME=''MA''), (select ID from CITY where NAME=''Boston''), (select ID from STREET where NAME=''Huntington Ave''), (select ID from COUNTRY where NAME=''US''))';
+EXECUTE IMMEDIATE 'Insert into MANAGEMENT (first_name,last_name,zip_code,pay,contact, password, door_no, State_id, city_id, street_id, country_id) VALUES (''Maria'', ''Chen'', 02124, 2000,6174238932, ''ghjkl'', 90, (select ID from STATE where NAME=''NC''), (select ID from CITY where NAME=''Charlotte''), (select ID from STREET where NAME=''Beresford Road''), (select ID from COUNTRY where NAME=''US''))';
+EXECUTE IMMEDIATE 'Insert into MANAGEMENT (first_name,last_name,zip_code,pay,contact, password, door_no, State_id, city_id, street_id, country_id) VALUES (''Jeff'', ''Blue'', 02123, 1500,6172346575, ''poiuy'', 12, (select ID from STATE where NAME=''TX''), (select ID from CITY where NAME=''Dallas''), (select ID from STREET where NAME=''Main Street District''), (select ID from COUNTRY where NAME=''US''))';
+ELSE
+    dbms_output.put_line('TABLE MANAGEMENT DOES NOT EXIST');
+END IF;
+
+END;
