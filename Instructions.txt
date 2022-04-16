@@ -8,7 +8,7 @@ If you want to recreate tables , please execute 2_TablesDDL
 Scripts description:
 1_Roles: To create roles and users
 2_TablesDDL: To create tables. if table already exists, it gets dropped and recreates.
-3_Insertion: To insert data into tables. Creates tables and data if table doesn't exist else inserts data
+3_Insertions_tableDDL.sql: To insert data into tables. Creates tables and data if table doesn't exist else inserts data
 
 Roles:
 Management: This role has acces to read/write to all the tables in schema
