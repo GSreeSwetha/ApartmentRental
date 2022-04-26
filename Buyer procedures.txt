@@ -1,0 +1,50 @@
+--Buyer: to make a deal/complaint/query
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE PACKAGE BUYER_OPERATIONS
+AS 
+
+END BUYER_OPERATIONS;
+/
+
+CREATE OR REPLACE PACKAGE BODY BUYER_OPERATIONS
+AS
+procedure make_complaint(
+LISTING_ID int,
+COMMENTS varchar2
+)
+is
+cus_id number;
+begin
+	SELECT id into cus_id
+      FROM   users
+     WHERE  email = USER;
+
+insert into complaints(LISTING_ID,DATE_ADDED,COMMENTS,type)values(LISTING_ID,sysdate,COMMENTS,'C');
+END MAKE_COMPLAINT;
+
+PROCEDURE QUESTION(
+LISTING_ID int,
+QUERY varchar2)
+is
+cus_id number;
+begin
+	SELECT id into cus_id
+      FROM   users
+     WHERE  email = USER;
+
+--query view execution
+-- insert into view
+insert into complaints(LISTING_ID,DATE_ADDED,COMMENTS,type)values(LISTING_ID,sysdate,COMMENTS,'Q');
+
+EXCEPTION
+  WHEN OTHERS THEN
+             dbms_output.Put_line(SQLERRM);
+
+             dbms_output.Put_line(dbms_utility.format_error_backtrace);
+
+             ROLLBACK;
+
+end QUESTION;
+END BUYER_OPERATIONS;

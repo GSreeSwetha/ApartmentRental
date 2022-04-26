@@ -1,0 +1,51 @@
+to address a complaint - ,management
+add/update listing tags -management/seller
+to remove premium for customer - management
+to change listing status - management
+
+CREATE OR REPLACE PACKAGE Management_OPERATIONS
+AS 
+PROCEDURE Address_complaint(complaint_id NUMBER, answer VARCHAR);
+PROCEDURE Update_liststatus(LISTING_ID NUMBER,status VARCHAR);
+END Management_OPERATIONS;
+/
+
+CREATE OR REPLACE PACKAGE BODY LISTING_OPERATIONS
+AS
+PROCEDURE Address_complaint(complaint_id NUMBER, ans VARCHAR)
+AS
+UID number;
+BEGIN
+dbms_output.put_line(USER);
+select id into UID from users where email=USER;
+dbms_output.put_line(UID);
+update complaints set Date_resolved=sysdate, addressed_by=UID, answer= ans where id=complaint_id;
+COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        dbms_output.put_line(SQLERRM);
+        rollback;
+        raise;
+END Address_complaint;
+
+PROCEDURE Update_ListStatus(LISTING_ID NUMBER,status VARCHAR)
+AS
+UID number;
+BEGIN
+dbms_output.put_line(USER);
+select id into UID from users where email=USER;
+dbms_output.put_line(UID);
+IF STATUS = 'Y'
+UPDATE LISTING_STATUS SET IS_AVAILABLE='1' WHERE LISTING_ID=LISTING_ID;
+ELSE
+UPDATE LISTING_STATUS SET IS_AVAILABLE='0' WHERE LISTING_ID=LISTING_ID;
+END IF;
+--do we need to remove the related records from offer or make offer status inactive?
+COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        dbms_output.put_line(SQLERRM);
+        rollback;
+        raise;
+END Update_ListStatus;
+END Managament_Operations;
