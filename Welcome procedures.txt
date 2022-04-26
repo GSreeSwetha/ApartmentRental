@@ -1,0 +1,188 @@
+--welcome
+
+--login
+
+--new user sign up
+
+--customer  buyer actions
+
+--customer  seller actions
+
+--PREMIUM signup
+
+--drop premium
+----------------------------
+
+--welcome
+
+CREATE OR replace PROCEDURE Welcome
+AS
+BEGIN
+    dbms_output.Put_line('WELCOME USER!');
+
+    dbms_output.Put_line('EXECUTE THE BELOW PROCEDURE TO SIGNUP AS CUSTOMER');
+
+dbms_output.Put_line('USER_SIGNUP(FIRST_NAME,LAST_NAME,IS_POSTER,IS_OWNER,IS_BUYER,CONTACT,EMAIL,PASSWORD,DOOR_NO,STREET_ID,STATE_ID,COUNTRY_ID,CITY_ID,ZIP_CODE,SUBSCRIBE)');
+
+dbms_output.put_line('if already a user: please execute the following command to login:  EXECUTE USER_LOGIN(EMAIL,PASSWORD)');
+
+dbms_output.Put_line('FOR ALL INFO NEEDED TO SIGN UP, RUN THE FOLLOWING ');
+dbms_output.Put_line('select * from COUNTRY');
+dbms_output.Put_line('select * from STATE');
+dbms_output.Put_line('select * from CITY');
+dbms_output.Put_line('select * from STREET');
+dbms_output.Put_line('If you would like to sign_up as a buyer: enter values for IS_BUYER : 1 else 0, If you would like to signup as a seller:enter values for IS_POSTER : 1 else 0, if you are a owner :enter values for IS_OWNER : 1 else 0, If you would like to subscribe as a premium member enter values for SUBSCRIBE :'Y' else 'N' ');
+
+dbms_output.Put_line('AFTER LOGGING IN EXECUTE EITHER SELLER_ACTIONS OR BUYER_ACTIONS TO SEE THE LIST OF AVAILABLE ACTIONS');
+EXCEPTION
+  WHEN OTHERS THEN
+             dbms_output.Put_line(SQLERRM);
+
+             dbms_output.Put_line(dbms_utility.format_error_backtrace);
+
+             ROLLBACK;
+END welcome;
+/
+
+--LOGIN
+create or replace procedure (email VARCHAR, PASSWORD VARCHAR)
+AS
+FLAG BOOLEAN:= FALSE;
+MAIL VARCHAR(50);
+PWD VARCGHAR2(20);
+BEGIN
+SELECT COUNT(EMAIL) INTO MAIL FROM USERS WHERE EMAIL=EMAIL;
+IF(MAIL = 0 ) THEN
+FLAG:=FALSE;
+dbms_output.Put_line('USER WITH GIVEN EMAIL DOESNOT EXIST.PLEASE USE VALID CREDENTIALS ELSE EXECUTE SIGNUP');
+ELSE
+ SELECT PASSWORD INTO PWD FROM USERS WHERE EMAIL=EMAIL;
+ IF (PASSWORD=PWD) THEN FLAG:=TRUE;
+ELSE FLAG:=FALSE;
+dbms_output.Put_line('INVALID PASSWORD.PLEASE USE VALID CREDENTIALS');
+END IF;
+END IF;
+IF FLAG THEN 
+CONNECT TO 'EMAIL';
+END IF;
+ENG LOGIN;
+/
+
+--customer  seller actions
+CREATE OR replace PROCEDURE Seller_actions
+AS
+BEGIN
+    dbms_output.Put_line('HELLO '
+                         ||Sys_context('USERENV', 'SESSION_USER')
+                         ||' !');
+
+    dbms_output.Put_line('OPERATIONS ALLOWED:');
+
+    dbms_output.Put_line('------------- PERSONAL INFORMATION -------------');
+
+dbms_output.Put_line('1. VIEW YOUR INFORMATION USING SELECT * FROM POSTER_<YOUR_USER_NAME>');
+
+dbms_output.Put_line('');
+
+dbms_output.Put_line('-------------LISTING RELATED ACTIONS-------------');
+
+dbms_output.Put_line('1. ADD A NEW LISTING USING ADD_LISTING(IS_PREMIUM,BANNER,DESCRIPT,ADDRESS_ID,ZIP_CODE,RENT,DEPOSIT,BROKERAGE,AREA_ID,HEAT,HOT_WATER,LAUNDRY,DATE_AVAILABLE,LEASE_ID,PROPERTY_TYPE_ID)');
+
+dbms_output.Put_line('2. REMOVE A LISTING USING DELETE_LISTING(MY_LISTING_ID number) ');
+
+dbms_output.Put_line('3. VIEW YOUR LISTINGS USING SELECT * FROM MY_LISTINGS_<user_name>');
+
+dbms_output.Put_line('3. Add a query by executing QUERY()');
+
+dbms_output.Put_line('');
+
+EXCEPTION
+  WHEN OTHERS THEN
+             dbms_output.Put_line(SQLERRM);
+
+             dbms_output.Put_line(dbms_utility.format_error_backtrace);
+
+             ROLLBACK;
+END seller_actions;
+
+/
+
+--assign premium
+
+CREATE OR replace PROCEDURE Premium_signup
+IS
+  ncount NUMBER;
+  cus_id NUMBER;
+BEGIN
+	SELECT id into cus_id
+      FROM   USERS
+     WHERE  EMAIL= USER;
+
+    SELECT Count(*)
+    INTO   ncount
+    FROM   subscriptions
+    WHERE  user_id = (SELECT id
+                          FROM   users
+                          WHERE  email = USER) and status ='Y';
+
+    IF( ncount > 0 ) THEN
+      dbms_output.Put_line('User is already a Premium member.');
+    ELSE
+      UPdate Subscriptions set status='Y', start_date=sysdate, subscription_end_date= SYSDATE + 365 where user_id=cus_id;
+      
+      EXECUTE IMMEDIATE 'GRANT SELECT ON PREMIUM_LISTINGS TO '||USER;
+
+     dbms_output.Put_line('Premium Listings view granted');
+
+      EXECUTE IMMEDIATE 'GRANT EXECUTE ON ABANDON_PREMIUM TO '||USER;
+
+ -- dbms_output.Put_line('Customer VIEW created');
+
+  COMMIT;
+END IF;
+EXCEPTION
+  WHEN OTHERS THEN
+             dbms_output.Put_line(SQLERRM);
+
+             dbms_output.Put_line(dbms_utility.format_error_backtrace);
+
+             ROLLBACK;
+END premium_signup;
+
+/
+
+---delete premium
+
+CREATE OR replace PROCEDURE Abandon_premium
+IS
+  ncount NUMBER;
+  cus_id NUMBER;
+BEGIN
+	SELECT id into cus_id
+      FROM   USERS
+     WHERE  EMAIL= USER;
+    SELECT Count(*)
+    INTO   ncount
+    FROM   subscriptions
+    WHERE  user_id = cus_id and status ='N';
+
+    IF( ncount = 0 ) THEN
+      dbms_output.Put_line('User is NOT a Premium member.');
+    ELSE
+    
+      EXECUTE IMMEDIATE 'UPDATE SUBSCRIPTIONS SET STATUS=''N'' WHERE CUSTOMER_ID =  '|| cus_id;
+      
+      EXECUTE IMMEDIATE 'REVOKE SELECT ON PREMIUM_LISTINGS FROM '||USER;
+
+      dbms_output.Put_line('Customer VIEW created');
+    END IF;
+EXCEPTION
+  WHEN OTHERS THEN
+             dbms_output.Put_line(SQLERRM);
+
+             dbms_output.Put_line(dbms_utility.format_error_backtrace);
+
+             ROLLBACK;
+END abandon_premium;
+
+/
